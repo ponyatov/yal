@@ -21,6 +21,7 @@ struct Sym {
 	virtual Sym* add(Sym*);
 	virtual Sym* div(Sym*);
 	virtual Sym* mk();
+	virtual Sym* mkdef(string="=");
 	static Sym*mk(Sym*);
 	virtual Sym* spx();		// represent object as space delimited items
 	static Sym* spx(Sym*);
@@ -30,19 +31,24 @@ extern void glob_init();
 
 struct Error: Sym { Error(string); };
 
-struct Var: Sym { Var(string,Sym*); Sym*eq(Sym*); Sym*spx(); };
+struct Var: Sym { Var(string,Sym*); Sym*eq(Sym*); Sym*spx();
+	Sym*mk(); Sym*mkdef(string); };
 
 struct Str: Sym { Str(string); string head(); Sym*add(Sym*); };
 
 struct Vector: Sym { Vector(); string head(); Sym*div(Sym*); Sym*str();
 	Sym*spx(); Sym*map(Sym*); };
 
-struct Op: Sym { Op(string); Sym*eval(); };
+struct Op: Sym { Op(string); Sym*eval(); Sym*mk(); };
 
 typedef Sym* (*FN)(Sym*);
 struct Fn: Sym { Fn(string,FN); FN fn; Sym*at(Sym*); };
 
-struct Dep: Sym { Dep(Sym*,Sym*,Sym*); Sym*mk(); };
+struct Dep: Sym { Dep(Sym*,Sym*,Sym*); Sym*mk(); };		// dependence
+struct Def: Sym { Def(Sym*); static Sym*def(Sym*);		// definition
+	Sym*mk(); };
+struct Ifdef: Def { Ifdef(Sym*); static Sym*ifdef(Sym*);// if definition
+	Sym*mk(); };
 
 extern int yylex();
 extern int yylineno;

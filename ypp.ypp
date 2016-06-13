@@ -14,7 +14,7 @@
 %left ADD SUB
 %left MUL DIV
 %left POW
-%left AT
+%right AT
 %left MAP
 %left TILD
 %%

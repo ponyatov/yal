@@ -30,7 +30,8 @@ Sym* Sym::div(Sym*o) { return new Error(head()+"/"+o->head()); }
 Sym* Sym::str() { return new Str(val); }
 
 Sym* Sym::mk(Sym*o) { return o->mk(); }
-Sym* Sym::mk() { return new Str(val); }
+Sym* Sym::mk() { return str(); }
+Sym* Sym::mkdef(string) { return str(); }
 Sym* Sym::spx() { return str(); }
 Sym* Sym::spx(Sym*o) { return o->spx(); }
 
@@ -39,6 +40,9 @@ Error::Error(string V):Sym("error",V) { yyerror(V); }
 Var::Var(string V,Sym*o):Sym("var",V) { push(o); }
 Sym* Var::eq(Sym*o) { pop(); push(o); return this; }
 Sym* Var::spx() { return nest[0]->spx(); }
+Sym* Var::mk() { return new Str("$("+val+")"); }
+Sym* Var::mkdef(string S) { return new Str(
+		str()->val + ' '+S+' ' + nest[0]->mk()->val); }
 
 Str::Str(string V):Sym("str",V){}
 Sym* Str::add(Sym*o) { return new Str(val+o->str()->val); }
@@ -77,6 +81,13 @@ Sym* Op::eval() {
 	if (val=="/") return nest[0]->div(nest[1]);
 	if (val=="|") return nest[1]->map(nest[0]);
 	return this; }
+Sym* Op::mk() {
+	if (val=="=") {
+		string N = nest[0]->mk()->val;
+		glob[N] =new Var(N,nest[1]);
+		return new Str(N+" = "+nest[1]->mk()->val);
+	}
+	else return Sym::mk(); }
 
 Fn::Fn(string V, FN F):Sym("fn",V) { fn=F; }
 Sym* Fn::at(Sym*o) { return fn(o); }
@@ -85,8 +96,16 @@ Dep::Dep(Sym*A,Sym*B,Sym*C):Sym("dep",A->str()->val+"<-"+B->str()->val) {
 	push(A); push(B); push(C); }
 Sym* Dep::mk() { string S;
 	S += nest[0]->spx()->val + " : " + nest[1]->spx()->val;
-	S += "\n\t" + nest[2]->spx()->val;
+	S += "\n\t" + nest[2]->map(glob["mk"])->spx()->val;
 	return new Str(S); }
+
+Def::Def(Sym*o):Sym("def",o->str()->val){ push(o); }
+Sym* Def::def(Sym*o) { return new Def(o); }
+Sym* Def::mk() { return nest[0]->mkdef(); }
+
+Ifdef::Ifdef(Sym*o):Def(o) { tag="ifdef"; }
+Sym* Ifdef::ifdef(Sym*o) { return new Ifdef(o); }
+Sym* Ifdef::mk() { return nest[0]->mkdef("?="); }
 
 map<string,Sym*> glob;
 void glob_init() {
@@ -102,6 +121,8 @@ void glob_init() {
 	glob["nl"]		= new Str("\n");
 	glob["tab"]		= new Str("\t");
 	//---------------------------------------- functions
-	glob["mk"]		= new Fn("mk",Sym::mk);
-	glob["spx"]		= new Fn("spx",Sym::spx);
+	glob["def"]		= new Fn("def",Def::def);	// definition
+	glob["ifdef"]	= new Fn("ifdef",Ifdef::ifdef);	// ?definition
+	glob["mk"]		= new Fn("mk",Sym::mk);		// in Makefile syntax
+	glob["spx"]		= new Fn("spx",Sym::spx);	// space delimited repr
 }
