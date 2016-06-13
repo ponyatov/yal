@@ -1,4 +1,20 @@
-files = src.src log.log ypp.ypp lpp.lpp hpp.hpp cpp.cpp Makefile .gitignore
+skelex = [
+	files = [ src.src log.log ypp.ypp lpp.lpp hpp.hpp cpp.cpp ]
+	Makefile .gitignore
+	README.md
+]
 
 .gitignore = *~ *.swp exe.exe log.log ypp.tab.?pp lex.yy.c
 
+Makefile = [
+	[ log.log : src.src ./exe.exe nl
+	tab ./exe.exe < $< $> $@ && tail $(TAIL) $@ ]
+	[ C = cpp.cpp ypp.tab.cpp lex.yy.c ]
+	[ H = hpp.hpp ypp.tab.hpp meta.hpp ]
+	[ ./exe.exe : $(C) $(H) nl
+	tab $(CXX) $(CXXFLAGS) -o $@ $(C) $(L) ]
+	[ ypp.tab.cpp : ypp.ypp nl
+	tab bison $< ]
+	[ lex.yy.c : lpp.lpp nl
+	tab flex $< ]
+]
