@@ -15,6 +15,7 @@ string LexString;
 
 \*(~|\.swp)			TOC(Sym,SYM)		/* lexer fixups for files & Makefile */
 $[<>@]				TOC(Sym,SYM)
+&&					TOC(Sym,SYM)
 $\([A-Z]+\)			TOC(Sym,SYM)
 \.\/exe\.exe		TOC(Sym,SYM)		/* lex program filename detection */
 
@@ -26,12 +27,18 @@ $\([A-Z]+\)			TOC(Sym,SYM)
 \=					TOC(Op,EQ)			/* operators */
 \@					TOC(Op,AT)
 \~					TOC(Op,TILD)
+\:					TOC(Op,COLON)
 
 \+					TOC(Op,ADD)
 \-					TOC(Op,SUB)
 \*					TOC(Op,MUL)
 \/					TOC(Op,DIV)
 \^					TOC(Op,POW)
+
+\|					TOC(Op,MAP)
+
+\<					TOC(Op,LESS)
+\>					TOC(Op,GREAT)
 
 [a-zA-Z0-9_.?]+		TOC(Sym,SYM)		/* symbol */
 
