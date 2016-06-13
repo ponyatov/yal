@@ -26,6 +26,8 @@ struct Error: Sym { Error(string); };
 
 struct Str: Sym { Str(string); string head(); Sym*add(Sym*); };
 
+struct Var: Sym { Var(string,Sym*); };
+
 struct Vector: Sym { Vector(); string head(); Sym*div(Sym*); Sym*str(); };
 
 struct Op: Sym { Op(string); Sym*eval(); };

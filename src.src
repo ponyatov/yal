@@ -1,4 +1,3 @@
-
 README.md = [
 	''+[ '#' '![logo]('+LOGO+'.png)' MODULE]/sp
 	''+['### ' +ABOUT]/sp
@@ -8,6 +7,8 @@ README.md = [
 	'github: ' +GITHUB
 ]
 
+.gitignore = [ *~ *.swp exe.exe log.log ypp.tab.?pp lex.yy.c ]
+
 skelex = [
 	files = [ src.src log.log ypp.ypp lpp.lpp hpp.hpp cpp.cpp ]
 	Makefile
@@ -15,8 +16,6 @@ skelex = [
 ]
 
 .end
-
-.gitignore = [ *~ *.swp exe.exe log.log ypp.tab.?pp lex.yy.c ]
 
 Makefile = [
 	[ log.log : src.src ./exe.exe nl

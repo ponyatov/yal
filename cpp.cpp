@@ -20,12 +20,14 @@ Sym* Sym::eval() {
 		(*it) = (*it)->eval();
 	return this; }
 
-Sym* Sym::eq(Sym*o) { glob[val]=o; return o; }
+Sym* Sym::eq(Sym*o) { glob[val]=new Var(val,o); return glob[val]; }
 Sym* Sym::add(Sym*o) { return new Error(head()+"+"+o->head()); }
 Sym* Sym::div(Sym*o) { return new Error(head()+"/"+o->head()); }
 Sym* Sym::str() { return new Str(val); }
 
 Error::Error(string V):Sym("error",V) { yyerror(V); }
+
+Var::Var(string V,Sym*o):Sym("var",V) { push(o); }
 
 Str::Str(string V):Sym("str",V){}
 Sym* Str::add(Sym*o) { return new Str(val+o->str()->val); }
