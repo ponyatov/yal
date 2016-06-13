@@ -1,16 +1,28 @@
-skelex = [
-	files = [ src.src log.log ypp.ypp lpp.lpp hpp.hpp cpp.cpp ]
-	Makefile .gitignore
-	README.md
+
+README.md = [
+	''+[ '#' '![logo]('+LOGO+'.png)' MODULE]/sp
+	''+['### ' +ABOUT]/sp
+	''
+	'(c) ' +AUTHOR+ ' , ' +LICENSE
+	''
+	'github: ' +GITHUB
 ]
 
-.gitignore = *~ *.swp exe.exe log.log ypp.tab.?pp lex.yy.c
+skelex = [
+	files = [ src.src log.log ypp.ypp lpp.lpp hpp.hpp cpp.cpp ]
+	Makefile
+	.gitignore README.md
+]
+
+.end
+
+.gitignore = [ *~ *.swp exe.exe log.log ypp.tab.?pp lex.yy.c ]
 
 Makefile = [
 	[ log.log : src.src ./exe.exe nl
 	tab ./exe.exe < $< $> $@ && tail $(TAIL) $@ ]
-	[ C = cpp.cpp ypp.tab.cpp lex.yy.c ]
-	[ H = hpp.hpp ypp.tab.hpp meta.hpp ]
+	C = [ cpp.cpp ypp.tab.cpp lex.yy.c ]
+	H = [ hpp.hpp ypp.tab.hpp meta.hpp ]
 	[ ./exe.exe : $(C) $(H) nl
 	tab $(CXX) $(CXXFLAGS) -o $@ $(C) $(L) ]
 	[ ypp.tab.cpp : ypp.ypp nl
