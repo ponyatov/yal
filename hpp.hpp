@@ -37,7 +37,7 @@ struct Var: Sym { Var(string,Sym*); Sym*eq(Sym*); Sym*spx();
 struct Str: Sym { Str(string); string head(); Sym*add(Sym*); };
 
 struct Vector: Sym { Vector(); string head(); Sym*div(Sym*); Sym*str();
-	Sym*spx(); Sym*map(Sym*); };
+	Sym*spx(); Sym*map(Sym*); Sym*mk(); };
 
 struct Op: Sym { Op(string); Sym*eval(); Sym*mk(); };
 

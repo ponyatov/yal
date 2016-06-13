@@ -10,16 +10,21 @@ README.md = spx|[
 
 .gitignore = [ *~ *.swp exe.exe log.log ypp.tab.?pp lex.yy.c ]
 
-CXX = 'g++'
-CXXFLAGS = '-std=gnu++11'
 Makefile = mk|[
-	ifdef@CXXFLAGS
-	./exe.exe : [ C H ] > [ CXX CXXFLAGS '-o' $@ C H ] 
+	def|[
+		C = [ cpp.cpp ypp.tab.cpp lex.yy.c ]
+		H = [ hpp.hpp ypp.tab.hpp meta.hpp ]
+		L = []
+	]
+	ifdef|[
+		CXX='g++'
+		CXXFLAGS='-std=gnu++11'
+	]
+	./exe.exe : [ C H ] > [ CXX CXXFLAGS '-o' $@ C L ] 
 	[ ypp.tab.cpp ypp.tab.hpp ] : ypp.ypp > [ bison $< ] 
 	lex.yy.c : lpp.lpp > [ flex $< ]
 ]
 
-mk@def@CXXFLAGS
 .end
 
 Makefile = [

@@ -71,6 +71,7 @@ Sym* Vector::map(Sym*fn) { Sym* V = new Vector();
 	for (auto it=nest.begin(),e=nest.end();it!=e;it++)
 		V->push(fn->at(*it));
 	return V; }
+Sym* Vector::mk() { return map(glob["mk"]); }
 
 Op::Op(string V):Sym("op",V){}
 Sym* Op::eval() {
@@ -95,7 +96,7 @@ Sym* Fn::at(Sym*o) { return fn(o); }
 Dep::Dep(Sym*A,Sym*B,Sym*C):Sym("dep",A->str()->val+"<-"+B->str()->val) {
 	push(A); push(B); push(C); }
 Sym* Dep::mk() { string S;
-	S += nest[0]->spx()->val + " : " + nest[1]->spx()->val;
+	S += nest[0]->mk()->spx()->val + " : " + nest[1]->mk()->spx()->val;
 	S += "\n\t" + nest[2]->map(glob["mk"])->spx()->val;
 	return new Str(S); }
 
